@@ -51,6 +51,11 @@ class Payload
         return $this->payload;
     }
 
+    public function payloadKeyCollection(): PayloadKeyCollection
+    {
+        return $this->payloadKeyCollection;
+    }
+
     /**
      * @return array<string, mixed>
      */
