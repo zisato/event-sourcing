@@ -4,33 +4,32 @@ namespace Zisato\EventSourcing\Tests\Unit\Aggregate\Event\PrivateData\Service;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Zisato\EventSourcing\Aggregate\Identity\UUID;
+use Zisato\EventSourcing\Aggregate\Event\PrivateData\Adapter\PayloadEncoderAdapterInterface;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\Exception\ForgottedPrivateDataException;
-use Zisato\EventSourcing\Aggregate\Event\PrivateData\Service\PrivateDataPayloadServiceInterface;
+use Zisato\EventSourcing\Aggregate\Event\PrivateData\Service\PrivateDataEventService;
+use Zisato\EventSourcing\Aggregate\Event\PrivateData\Service\PrivateDataEventServiceInterface;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\Strategy\PayloadKeyCollectionStrategyInterface;
-use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\Payload;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\PayloadKey;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\PayloadKeyCollection;
-use Zisato\EventSourcing\Aggregate\Event\PrivateData\Service\PrivateDataEventPayloadService;
-use Zisato\EventSourcing\Aggregate\Event\PrivateData\Service\PrivateDataEventServiceInterface;
+use Zisato\EventSourcing\Aggregate\Identity\UUID;
 use Zisato\EventSourcing\Tests\Stub\Aggregate\Event\EventStub;
 
-class PrivateDataEventPayloadServiceTest extends TestCase
+class PrivateDataEventServiceTest extends TestCase
 {
     private PrivateDataEventServiceInterface $privateDataEventService;
     /** @var PayloadKeyCollectionStrategyInterface|MockObject $payloadKeyCollectionStrategy */
     private $payloadKeyCollectionStrategy;
-    /** @var PrivateDataPayloadServiceInterface|MockObject $privateDataPayloadService */
-    private $privateDataPayloadService;
+    /** @var PayloadEncoderAdapterInterface|MockObject $payloadEncoderAdapter */
+    private $payloadEncoderAdapter;
 
     protected function setUp(): void
     {
         $this->payloadKeyCollectionStrategy = $this->createMock(PayloadKeyCollectionStrategyInterface::class);
-        $this->privateDataPayloadService = $this->createMock(PrivateDataPayloadServiceInterface::class);
+        $this->payloadEncoderAdapter = $this->createMock(PayloadEncoderAdapterInterface::class);
 
-        $this->privateDataEventService = new PrivateDataEventPayloadService(
+        $this->privateDataEventService = new PrivateDataEventService(
             $this->payloadKeyCollectionStrategy,
-            $this->privateDataPayloadService
+            $this->payloadEncoderAdapter
         );
     }
 
@@ -83,15 +82,14 @@ class PrivateDataEventPayloadServiceTest extends TestCase
             PayLoadKey::create('foo'),
             PayloadKey::create('nested', 'bar')
         );
-        $payload = Payload::create($aggregateId->value(), $data, $payloadKeys);
 
         $this->payloadKeyCollectionStrategy->expects($this->once())
             ->method('payloadKeys')
             ->willReturn($payloadKeys);
 
-        $this->privateDataPayloadService->expects($this->once())
+        $this->payloadEncoderAdapter->expects($this->once())
             ->method('hide')
-            ->with($this->equalTo($payload))
+            ->with($this->equalTo($aggregateId->value()), $this->equalTo($payloadKeys), $this->equalTo($data))
             ->willReturn($encryptedData);
 
         $event = EventStub::occur($aggregateId->value(), $data);
@@ -130,15 +128,14 @@ class PrivateDataEventPayloadServiceTest extends TestCase
             PayLoadKey::create('foo'),
             PayloadKey::create('nested', 'bar')
         );
-        $payload = Payload::create($aggregateId->value(), $data, $payloadKeys);
 
         $this->payloadKeyCollectionStrategy->expects($this->once())
             ->method('payloadKeys')
             ->willReturn($payloadKeys);
         
-        $this->privateDataPayloadService->expects($this->once())
+        $this->payloadEncoderAdapter->expects($this->once())
             ->method('show')
-            ->with($this->equalTo($payload))
+            ->with($this->equalTo($aggregateId->value()), $this->equalTo($payloadKeys), $this->equalTo($data))
             ->willReturn($decryptedData);
         
         $event = EventStub::occur($aggregateId->value(), $data);
@@ -177,17 +174,21 @@ class PrivateDataEventPayloadServiceTest extends TestCase
             PayLoadKey::create('foo'),
             PayloadKey::create('nested', 'bar')
         );
-        $payload = Payload::create($aggregateId->value(), $data, $payloadKeys);
 
         $this->payloadKeyCollectionStrategy->expects($this->once())
             ->method('payloadKeys')
             ->willReturn($payloadKeys);
         
-        $this->privateDataPayloadService->expects($this->once())
+        $this->payloadEncoderAdapter->expects($this->once())
             ->method('show')
-            ->with($this->equalTo($payload))
+            ->with($this->equalTo($aggregateId->value()), $this->equalTo($payloadKeys), $this->equalTo($data))
             ->willThrowException(new ForgottedPrivateDataException());
-             
+
+        $this->payloadEncoderAdapter->expects($this->once())
+            ->method('forget')
+            ->with($this->equalTo($aggregateId->value()), $this->equalTo($payloadKeys), $this->equalTo($data))
+            ->willReturn($decryptedData);
+
         $event = EventStub::occur($aggregateId->value(), $data);
         $expectedMetadata = array_merge(
             $event->metadata(),
