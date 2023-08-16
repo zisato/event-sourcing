@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject;
 
+use Zisato\EventSourcing\Aggregate\Event\PrivateData\Adapter\PayloadEncoderAdapterInterface;
+
 class Payload
 {
     private string $aggregateId;
@@ -15,16 +17,19 @@ class Payload
 
     private PayloadKeyCollection $payloadKeyCollection;
 
+    private PayloadEncoderAdapterInterface $payloadEncoderAdapter;
+
     /**
      * @param array<string, mixed> $payload
      */
-    private function __construct(string $aggregateId, array $payload, PayloadKeyCollection $payloadKeyCollection)
+    private function __construct(string $aggregateId, array $payload, PayloadKeyCollection $payloadKeyCollection, PayloadEncoderAdapterInterface $payloadEncoderAdapter)
     {
         $this->assertKeyNotExists($payload, $payloadKeyCollection);
 
         $this->aggregateId = $aggregateId;
         $this->payload = $payload;
         $this->payloadKeyCollection = $payloadKeyCollection;
+        $this->payloadEncoderAdapter = $payloadEncoderAdapter;
     }
 
     /**
@@ -33,9 +38,10 @@ class Payload
     public static function create(
         string $aggregateId,
         array $payload,
-        PayloadKeyCollection $payloadKeyCollection
+        PayloadKeyCollection $payloadKeyCollection,
+        PayloadEncoderAdapterInterface $payloadEncoderAdapter
     ): self {
-        return new self($aggregateId, $payload, $payloadKeyCollection);
+        return new self($aggregateId, $payload, $payloadKeyCollection, $payloadEncoderAdapter);
     }
 
     public function aggregateId(): string
@@ -56,22 +62,19 @@ class Payload
         return $this->payloadKeyCollection;
     }
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function changeValues(callable $setter): array
+    public function show(): void
     {
-        foreach ($this->payloadKeyCollection->values() as $payloadKey) {
-            $ref = &$this->payload;
+        $this->payload = $this->payloadEncoderAdapter->show($this->aggregateId(), $this->payloadKeyCollection(), $this->payload());
+    }
 
-            foreach ($payloadKey->values() as $key) {
-                $ref = &$ref[$key];
-            }
+    public function hide(): void
+    {
+        $this->payload = $this->payloadEncoderAdapter->hide($this->aggregateId(), $this->payloadKeyCollection(), $this->payload());
+    }
 
-            $ref = $setter($ref);
-        }
-
-        return $this->payload;
+    public function forget(): void
+    {
+        $this->payload = $this->payloadEncoderAdapter->forget($this->aggregateId(), $this->payloadKeyCollection(), $this->payload());
     }
 
     /**

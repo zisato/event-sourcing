@@ -4,23 +4,24 @@ declare(strict_types=1);
 
 namespace Zisato\EventSourcing\Aggregate\Event\PrivateData\Service;
 
-use Zisato\EventSourcing\Aggregate\Event\PrivateData\Strategy\PayloadKeyCollectionStrategyInterface;
 use Zisato\EventSourcing\Aggregate\Event\EventInterface;
-use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\Payload;
+use Zisato\EventSourcing\Aggregate\Event\PrivateData\Adapter\PayloadEncoderAdapterInterface;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\Exception\ForgottedPrivateDataException;
+use Zisato\EventSourcing\Aggregate\Event\PrivateData\Strategy\PayloadKeyCollectionStrategyInterface;
+use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\Payload;
 
-class PrivateDataEventPayloadService implements PrivateDataEventServiceInterface
+class PrivateDataEventService implements PrivateDataEventServiceInterface
 {
     private PayloadKeyCollectionStrategyInterface $payloadKeyCollectionStrategy;
 
-    private PrivateDataPayloadServiceInterface $privateDataPayloadService;
+    private PayloadEncoderAdapterInterface $payloadEncoderAdapter;
 
     public function __construct(
         PayloadKeyCollectionStrategyInterface $payloadKeyCollectionStrategy,
-        PrivateDataPayloadServiceInterface $privateDataPayloadService
+        PayloadEncoderAdapterInterface $payloadEncoderAdapter
     ) {
         $this->payloadKeyCollectionStrategy = $payloadKeyCollectionStrategy;
-        $this->privateDataPayloadService = $privateDataPayloadService;
+        $this->payloadEncoderAdapter = $payloadEncoderAdapter;
     }
 
     public function hidePrivateData(EventInterface $event): EventInterface
@@ -31,11 +32,11 @@ class PrivateDataEventPayloadService implements PrivateDataEventServiceInterface
             return $event;
         }
 
-        $payload = Payload::create($event->aggregateId(), $event->payload(), $payloadKeys);
+        $payload = Payload::create($event->aggregateId(), $event->payload(), $payloadKeys, $this->payloadEncoderAdapter);
 
-        $newPayload = $this->privateDataPayloadService->hide($payload);
+        $payload->hide();
 
-        return $this->createNewEvent($event, $newPayload);
+        return $this->createNewEvent($event, $payload->payload());
     }
 
     public function showPrivateData(EventInterface $event): EventInterface
@@ -46,23 +47,21 @@ class PrivateDataEventPayloadService implements PrivateDataEventServiceInterface
             return $event;
         }
 
-        $payload = Payload::create($event->aggregateId(), $event->payload(), $payloadKeys);
+        $payload = Payload::create($event->aggregateId(), $event->payload(), $payloadKeys, $this->payloadEncoderAdapter);
 
-        $forgottenValues = false;
+        $forgottenPrivateData = false;
 
         try {
-            $newPayload = $this->privateDataPayloadService->show($payload);
+            $payload->show();
         } catch (ForgottedPrivateDataException $exception) {
-            $newPayload = $payload->changeValues(function ($value) {
-                return null;
-            });
+            $payload->forget();
 
-            $forgottenValues = true;
+            $forgottenPrivateData = true;
         }
 
-        $newEvent = $this->createNewEvent($event, $newPayload);
+        $newEvent = $this->createNewEvent($event, $payload->payload());
 
-        if ($forgottenValues) {
+        if ($forgottenPrivateData) {
             $newEvent = $newEvent->withMetadata(self::METADATA_KEY_EVENT_FORGOTTEN_VALUES, true);
         }
 

@@ -2,19 +2,28 @@
 
 namespace Zisato\EventSourcing\Tests\Unit\Aggregate\Event\PrivateData\ValueObject;
 
-use Zisato\EventSourcing\Aggregate\Identity\UUID;
+use PHPUnit\Framework\TestCase;
+use Zisato\EventSourcing\Aggregate\Event\PrivateData\Adapter\PayloadEncoderAdapterInterface;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\Payload;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\PayloadKey;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\PayloadKeyCollection;
-use PHPUnit\Framework\TestCase;
+use Zisato\EventSourcing\Aggregate\Identity\UUID;
 
 class PayloadTest extends TestCase
 {
+    /** @var PayloadEncoderAdapterInterface|MockObject $payloadEncoderAdapter */
+    private $payloadEncoderAdapter;
+
+    protected function setUp(): void
+    {
+        $this->payloadEncoderAdapter = $this->createMock(PayloadEncoderAdapterInterface::class);
+    }
+
     public function testItShouldCreateSuccessfully(): void
     {
         $aggregateId = UUID::fromString('022390a2-f596-11ec-b939-0242ac120002');
         $data = [
-            'doe'=> [
+            'doe' => [
                 'bar' => '',
             ],
             'nested' => [
@@ -28,7 +37,7 @@ class PayloadTest extends TestCase
             PayloadKey::create('nested', 'doe', 'bar'),
         );
 
-        $payload = Payload::create($aggregateId->value(), $data, $payloadKeyCollection);
+        $payload = Payload::create($aggregateId->value(), $data, $payloadKeyCollection, $this->payloadEncoderAdapter);
 
         $this->assertEquals($payload->payload(), $data);
     }
@@ -39,7 +48,7 @@ class PayloadTest extends TestCase
 
         $aggregateId = UUID::fromString('022390a2-f596-11ec-b939-0242ac120002');
         $data = [
-            'doe'=> [
+            'doe' => [
                 'bar' => '',
             ],
             'nested' => [
@@ -53,6 +62,6 @@ class PayloadTest extends TestCase
             PayloadKey::create('nested', 'doe', 'foo'),
         );
 
-        Payload::create($aggregateId->value(), $data, $payloadKeyCollection);
+        Payload::create($aggregateId->value(), $data, $payloadKeyCollection, $this->payloadEncoderAdapter);
     }
 }
