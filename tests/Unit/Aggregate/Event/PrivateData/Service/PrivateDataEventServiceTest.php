@@ -14,7 +14,7 @@ use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\PayloadKeyColle
 use Zisato\EventSourcing\Aggregate\Identity\UUID;
 use Zisato\EventSourcing\Tests\Stub\Aggregate\Event\EventStub;
 
-class PrivateDataEventPayloadServiceTest extends TestCase
+class PrivateDataEventServiceTest extends TestCase
 {
     private PrivateDataEventServiceInterface $privateDataEventService;
     /** @var PayloadKeyCollectionStrategyInterface|MockObject $payloadKeyCollectionStrategy */
