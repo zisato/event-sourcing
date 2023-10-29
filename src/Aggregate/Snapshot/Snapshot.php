@@ -4,19 +4,22 @@ declare(strict_types=1);
 
 namespace Zisato\EventSourcing\Aggregate\Snapshot;
 
+use DateTimeImmutable;
 use Zisato\EventSourcing\Aggregate\AggregateRootInterface;
 use Zisato\EventSourcing\Aggregate\ValueObject\Version;
 use Zisato\EventSourcing\Identity\IdentityInterface;
 
 final class Snapshot implements SnapshotInterface
 {
-    final protected function __construct(private readonly AggregateRootInterface $aggregateRoot, private readonly \DateTimeImmutable $createdAt)
-    {
+    final private function __construct(
+        private readonly AggregateRootInterface $aggregateRoot,
+        private readonly DateTimeImmutable $createdAt
+    ) {
     }
 
     public static function create(
         AggregateRootInterface $aggregateRoot,
-        \DateTimeImmutable $createdAt
+        DateTimeImmutable $createdAt
     ): SnapshotInterface {
         return new self($aggregateRoot, $createdAt);
     }
@@ -41,7 +44,7 @@ final class Snapshot implements SnapshotInterface
         return $this->aggregateRoot->version();
     }
 
-    public function createdAt(): \DateTimeImmutable
+    public function createdAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }

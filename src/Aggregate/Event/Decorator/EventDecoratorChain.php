@@ -9,7 +9,7 @@ use Zisato\EventSourcing\Aggregate\Event\EventInterface;
 final class EventDecoratorChain implements EventDecoratorInterface
 {
     /**
-     * @var EventDecoratorInterface[] $decorators
+     * @var EventDecoratorInterface[]
      */
     private readonly array $decorators;
 

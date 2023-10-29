@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zisato\EventSourcing\Aggregate\Serializer;
 
+use ReflectionClass;
 use Zisato\EventSourcing\Aggregate\AggregateRootInterface;
 use Zisato\EventSourcing\Aggregate\Exception\AggregateSerializerException;
 
@@ -40,8 +41,8 @@ final class ReflectionAggregateRootSerializer implements AggregateRootSerializer
 
         $this->assertRequiredKeys($data);
 
-        /** @var \ReflectionClass<AggregateRootInterface> $class */
-        $class = new \ReflectionClass($data[self::KEY_CLASS_NAME]);
+        /** @var ReflectionClass<AggregateRootInterface> $class */
+        $class = new ReflectionClass($data[self::KEY_CLASS_NAME]);
 
         $this->assertNotImplementsAggregateRoot($class, $data[self::KEY_CLASS_NAME]);
 
@@ -59,8 +60,8 @@ final class ReflectionAggregateRootSerializer implements AggregateRootSerializer
     private function getProperties(AggregateRootInterface $aggregateRoot): array
     {
         $result = [];
-        /** @var \ReflectionClass<AggregateRootInterface> $class */
-        $class = new \ReflectionClass($aggregateRoot);
+        /** @var ReflectionClass<AggregateRootInterface> $class */
+        $class = new ReflectionClass($aggregateRoot);
 
         do {
             $properties = $this->reflectionAggregateRootPropertySerializer->getProperties($aggregateRoot, $class);
@@ -72,12 +73,12 @@ final class ReflectionAggregateRootSerializer implements AggregateRootSerializer
     }
 
     /**
-     * @param \ReflectionClass<AggregateRootInterface> $class
+     * @param ReflectionClass<AggregateRootInterface> $class
      * @param array<string, mixed> $propertiesData
      */
     private function setProperties(
         AggregateRootInterface $aggregateRoot,
-        \ReflectionClass $class,
+        ReflectionClass $class,
         array $propertiesData
     ): void {
         do {
@@ -114,9 +115,9 @@ final class ReflectionAggregateRootSerializer implements AggregateRootSerializer
     }
 
     /**
-     * @param \ReflectionClass<object> $class
+     * @param ReflectionClass<object> $class
      */
-    private function assertNotImplementsAggregateRoot(\ReflectionClass $class, string $className): void
+    private function assertNotImplementsAggregateRoot(ReflectionClass $class, string $className): void
     {
         if (! $class->implementsInterface(AggregateRootInterface::class)) {
             throw new AggregateSerializerException(\sprintf(

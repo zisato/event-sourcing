@@ -9,8 +9,9 @@ use Zisato\EventSourcing\Aggregate\Snapshot\Store\SnapshotStoreInterface;
 
 final class SynchronousSnapshotService implements SnapshotServiceInterface
 {
-    public function __construct(private readonly SnapshotStoreInterface $snapshotStore)
-    {
+    public function __construct(
+        private readonly SnapshotStoreInterface $snapshotStore
+    ) {
     }
 
     public function create(SnapshotInterface $snapshot): void

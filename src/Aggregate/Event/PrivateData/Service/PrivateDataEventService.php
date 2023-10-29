@@ -12,8 +12,10 @@ use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\Payload;
 
 final class PrivateDataEventService implements PrivateDataEventServiceInterface
 {
-    public function __construct(private readonly PayloadKeyCollectionStrategyInterface $payloadKeyCollectionStrategy, private readonly PayloadEncoderAdapterInterface $payloadEncoderAdapter)
-    {
+    public function __construct(
+        private readonly PayloadKeyCollectionStrategyInterface $payloadKeyCollectionStrategy,
+        private readonly PayloadEncoderAdapterInterface $payloadEncoderAdapter
+    ) {
     }
 
     public function hidePrivateData(EventInterface $event): EventInterface
@@ -24,7 +26,12 @@ final class PrivateDataEventService implements PrivateDataEventServiceInterface
             return $event;
         }
 
-        $payload = Payload::create($event->aggregateId(), $event->payload(), $payloadKeys, $this->payloadEncoderAdapter);
+        $payload = Payload::create(
+            $event->aggregateId(),
+            $event->payload(),
+            $payloadKeys,
+            $this->payloadEncoderAdapter
+        );
 
         $payload->hide();
 
@@ -39,7 +46,12 @@ final class PrivateDataEventService implements PrivateDataEventServiceInterface
             return $event;
         }
 
-        $payload = Payload::create($event->aggregateId(), $event->payload(), $payloadKeys, $this->payloadEncoderAdapter);
+        $payload = Payload::create(
+            $event->aggregateId(),
+            $event->payload(),
+            $payloadKeys,
+            $this->payloadEncoderAdapter
+        );
 
         $forgottenPrivateData = false;
 

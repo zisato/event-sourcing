@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject;
 
+use InvalidArgumentException;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\Adapter\PayloadEncoderAdapterInterface;
 
 final class Payload
@@ -18,8 +19,12 @@ final class Payload
     /**
      * @param array<string, mixed> $payload
      */
-    private function __construct(private readonly string $aggregateId, array $payload, PayloadKeyCollection $payloadKeyCollection, private readonly PayloadEncoderAdapterInterface $payloadEncoderAdapter)
-    {
+    private function __construct(
+        private readonly string $aggregateId,
+        array $payload,
+        PayloadKeyCollection $payloadKeyCollection,
+        private readonly PayloadEncoderAdapterInterface $payloadEncoderAdapter
+    ) {
         $this->assertKeyNotExists($payload, $payloadKeyCollection);
         $this->payload = $payload;
         $this->payloadKeyCollection = $payloadKeyCollection;
@@ -57,17 +62,29 @@ final class Payload
 
     public function show(): void
     {
-        $this->payload = $this->payloadEncoderAdapter->show($this->aggregateId, $this->payloadKeyCollection, $this->payload);
+        $this->payload = $this->payloadEncoderAdapter->show(
+            $this->aggregateId,
+            $this->payloadKeyCollection,
+            $this->payload
+        );
     }
 
     public function hide(): void
     {
-        $this->payload = $this->payloadEncoderAdapter->hide($this->aggregateId, $this->payloadKeyCollection, $this->payload);
+        $this->payload = $this->payloadEncoderAdapter->hide(
+            $this->aggregateId,
+            $this->payloadKeyCollection,
+            $this->payload
+        );
     }
 
     public function forget(): void
     {
-        $this->payload = $this->payloadEncoderAdapter->forget($this->aggregateId, $this->payloadKeyCollection, $this->payload);
+        $this->payload = $this->payloadEncoderAdapter->forget(
+            $this->aggregateId,
+            $this->payloadKeyCollection,
+            $this->payload
+        );
     }
 
     /**
@@ -82,7 +99,7 @@ final class Payload
 
             foreach ($payloadKey->values() as $key) {
                 if (! array_key_exists($key, $ref)) {
-                    throw new \InvalidArgumentException(\sprintf('Key %s not extist in payload', $key));
+                    throw new InvalidArgumentException(\sprintf('Key %s not extist in payload', $key));
                 }
 
                 $ref = &$ref[$key];

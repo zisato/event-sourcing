@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zisato\EventSourcing\Aggregate\Event\Stream;
 
+use Iterator;
 use Zisato\EventSourcing\Aggregate\Event\EventInterface;
 
 final class EventStream implements EventStreamInterface
@@ -33,9 +34,9 @@ final class EventStream implements EventStreamInterface
     }
 
     /**
-     * @return \Iterator<EventInterface>
+     * @return Iterator<EventInterface>
      */
-    public function events(): \Iterator
+    public function events(): Iterator
     {
         yield from $this->events;
     }

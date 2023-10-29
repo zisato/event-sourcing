@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject;
 
+use InvalidArgumentException;
+
 final class SecretKey
 {
     private readonly string $value;
@@ -28,7 +30,7 @@ final class SecretKey
     private function assertInvalidValue(string $value): void
     {
         if (trim($value) === '') {
-            throw new \InvalidArgumentException();
+            throw new InvalidArgumentException();
         }
     }
 }

@@ -11,8 +11,11 @@ use Zisato\EventSourcing\Identity\IdentityInterface;
 
 final class AggregateRootRepositoryWithSnapshot implements AggregateRootRepositoryInterface
 {
-    public function __construct(private readonly AggregateRootRepositoryInterface $aggregateRootRepository, private readonly EventStoreInterface $eventStore, private readonly SnapshotterInterface $snapshotter)
-    {
+    public function __construct(
+        private readonly AggregateRootRepositoryInterface $aggregateRootRepository,
+        private readonly EventStoreInterface $eventStore,
+        private readonly SnapshotterInterface $snapshotter
+    ) {
     }
 
     public function get(IdentityInterface $aggregateId): AggregateRootInterface

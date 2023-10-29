@@ -4,18 +4,20 @@ declare(strict_types=1);
 
 namespace Zisato\EventSourcing\Event;
 
-final class Event implements EventInterface
+use DateTimeImmutable;
+
+class Event implements EventInterface
 {
     /**
      * @param array<string, mixed> $payload
      */
     public function __construct(
-        private readonly \DateTimeImmutable $createdAt,
+        private readonly DateTimeImmutable $createdAt,
         private readonly array $payload
     ) {
     }
 
-    public function createdAt(): \DateTimeImmutable
+    public function createdAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }

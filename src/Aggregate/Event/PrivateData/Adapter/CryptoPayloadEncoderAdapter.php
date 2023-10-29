@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Zisato\EventSourcing\Aggregate\Event\PrivateData\Adapter;
 
-use Zisato\EventSourcing\Aggregate\Event\PrivateData\Adapter\PayloadEncoderAdapterInterface;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\Crypto\CryptoInterface;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\Crypto\SecretKeyStoreInterface;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\Exception\DeletedKeyException;
@@ -16,8 +15,11 @@ use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\SecretKey;
 
 final class CryptoPayloadEncoderAdapter implements PayloadEncoderAdapterInterface
 {
-    public function __construct(private readonly PayloadValueSerializerInterface $payloadValueSerializer, private readonly SecretKeyStoreInterface $secretKeyStore, private readonly CryptoInterface $crypto)
-    {
+    public function __construct(
+        private readonly PayloadValueSerializerInterface $payloadValueSerializer,
+        private readonly SecretKeyStoreInterface $secretKeyStore,
+        private readonly CryptoInterface $crypto
+    ) {
     }
 
     /**

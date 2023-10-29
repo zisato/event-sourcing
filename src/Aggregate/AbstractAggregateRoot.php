@@ -18,8 +18,9 @@ abstract class AbstractAggregateRoot implements AggregateRootInterface
 
     private EventStreamInterface $recordedEvents;
 
-    final protected function __construct(private readonly IdentityInterface $id)
-    {
+    final protected function __construct(
+        private readonly IdentityInterface $id
+    ) {
         $this->version = Version::zero();
         $this->recordedEvents = EventStream::create();
     }

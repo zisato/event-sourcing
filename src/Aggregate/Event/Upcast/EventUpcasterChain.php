@@ -9,7 +9,7 @@ use Zisato\EventSourcing\Aggregate\Event\EventInterface;
 final class EventUpcasterChain implements UpcasterInterface
 {
     /**
-     * @var UpcasterInterface[] $upcasters
+     * @var UpcasterInterface[]
      */
     private readonly array $upcasters;
 

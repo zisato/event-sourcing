@@ -10,8 +10,9 @@ final class AggregateRootVersionSnapshotStrategy implements SnapshotStrategyInte
 {
     private const DEFAULT_VERSION_TO_SNAPSHOT = 20;
 
-    public function __construct(private readonly int $versionToCreateSnapshot = self::DEFAULT_VERSION_TO_SNAPSHOT)
-    {
+    public function __construct(
+        private readonly int $versionToCreateSnapshot = self::DEFAULT_VERSION_TO_SNAPSHOT
+    ) {
     }
 
     public function shouldCreateSnapshot(AggregateRootInterface $aggregateRoot): bool

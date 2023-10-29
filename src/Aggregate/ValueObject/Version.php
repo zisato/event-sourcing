@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Zisato\EventSourcing\Aggregate\ValueObject;
 
+use InvalidArgumentException;
+
 final class Version
 {
     /**
@@ -48,7 +50,7 @@ final class Version
     private function checkValidValue(int $value): void
     {
         if ($value < self::VALUE_MIN) {
-            throw new \InvalidArgumentException(\sprintf(
+            throw new InvalidArgumentException(\sprintf(
                 'Invalid Version value. Min allowed: %d',
                 self::VALUE_MIN
             ));

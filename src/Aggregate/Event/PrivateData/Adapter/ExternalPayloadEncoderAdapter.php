@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Zisato\EventSourcing\Aggregate\Event\PrivateData\Adapter;
 
-use Zisato\EventSourcing\Aggregate\Event\PrivateData\Adapter\PayloadEncoderAdapterInterface;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\Repository\PrivateDataRepositoryInterface;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\PayloadKeyCollection;
 use Zisato\EventSourcing\Aggregate\Identity\UUID;
 
 final class ExternalPayloadEncoderAdapter implements PayloadEncoderAdapterInterface
 {
-    public function __construct(private readonly PrivateDataRepositoryInterface $privateDataRepository)
-    {
+    public function __construct(
+        private readonly PrivateDataRepositoryInterface $privateDataRepository
+    ) {
     }
 
     /**

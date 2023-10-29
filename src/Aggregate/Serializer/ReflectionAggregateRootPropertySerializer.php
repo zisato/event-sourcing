@@ -4,19 +4,21 @@ declare(strict_types=1);
 
 namespace Zisato\EventSourcing\Aggregate\Serializer;
 
+use ReflectionClass;
+use ReflectionProperty;
 use Zisato\EventSourcing\Aggregate\AggregateRootInterface;
 
 final class ReflectionAggregateRootPropertySerializer
 {
-    private const PROPERTIES_VISIBILITY = \ReflectionProperty::IS_PUBLIC |
-        \ReflectionProperty::IS_PROTECTED |
-        \ReflectionProperty::IS_PRIVATE;
+    private const PROPERTIES_VISIBILITY = ReflectionProperty::IS_PUBLIC |
+        ReflectionProperty::IS_PROTECTED |
+        ReflectionProperty::IS_PRIVATE;
 
     /**
-     * @param \ReflectionClass<object> $class
+     * @param ReflectionClass<object> $class
      * @return array<string, mixed>
      */
-    public function getProperties(AggregateRootInterface $aggregateRoot, \ReflectionClass $class): array
+    public function getProperties(AggregateRootInterface $aggregateRoot, ReflectionClass $class): array
     {
         $result = [];
         $properties = $class->getProperties(self::PROPERTIES_VISIBILITY);
@@ -30,12 +32,12 @@ final class ReflectionAggregateRootPropertySerializer
     }
 
     /**
-     * @param \ReflectionClass<object> $class
+     * @param ReflectionClass<object> $class
      * @param array<string, mixed> $propertiesValues
      */
     public function setProperties(
         AggregateRootInterface $aggregateRoot,
-        \ReflectionClass $class,
+        ReflectionClass $class,
         array $propertiesValues
     ): void {
         $properties = $class->getProperties(self::PROPERTIES_VISIBILITY);

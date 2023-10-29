@@ -9,7 +9,7 @@ final class PayloadKey
     /**
      * @var string[]
      */
-    private array $values;
+    private readonly array $values;
 
     public function __construct(string ...$values)
     {

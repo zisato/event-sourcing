@@ -13,8 +13,9 @@ final class StaticMethodVersionResolver implements VersionResolverInterface
      */
     private const METHOD_NAME = 'defaultVersion';
 
-    public function __construct(private readonly string $method = self::METHOD_NAME)
-    {
+    public function __construct(
+        private readonly string $method = self::METHOD_NAME
+    ) {
     }
 
     public function resolve(EventInterface $event): int

@@ -11,8 +11,9 @@ use Zisato\EventSourcing\JSON\JSON;
 
 final class EventSerializer implements EventSerializerInterface
 {
-    public function __construct(private readonly VersionResolverInterface $versionResolver)
-    {
+    public function __construct(
+        private readonly VersionResolverInterface $versionResolver
+    ) {
     }
 
     public function fromArray(array $data): EventInterface
