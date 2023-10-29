@@ -5,12 +5,15 @@ namespace Zisato\EventSourcing\Tests\Unit\Aggregate\Event\PrivateData\Strategy;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Zisato\EventSourcing\Aggregate\Event\EventInterface;
+use Zisato\EventSourcing\Aggregate\Event\PrivateData\PrivateDataPayloadInterface;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\Strategy\PayloadKeyCollectionByEventInterface;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\PayloadKey;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\PayloadKeyCollection;
-use Zisato\EventSourcing\Aggregate\Event\PrivateData\PrivateDataPayloadInterface;
 use Zisato\EventSourcing\Tests\Stub\Aggregate\Event\PrivateDataPayloadStub;
 
+/**
+ * @covers \Zisato\EventSourcing\Aggregate\Event\PrivateData\Strategy\PayloadKeyCollectionByEventInterface
+ */
 class PayloadKeyCollectionByEventInterfaceTest extends TestCase
 {
     private PayloadKeyCollectionByEventInterface $payloadKeyCollectionStrategy;

@@ -6,6 +6,9 @@ use PHPUnit\Framework\TestCase;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\Serializer\JsonPayloadValueSerializer;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\Serializer\PayloadValueSerializerInterface;
 
+/**
+ * @covers \Zisato\EventSourcing\Aggregate\Event\PrivateData\Serializer\JsonPayloadValueSerializer
+ */
 class JsonPayloadValueSerializerTest extends TestCase
 {
     private PayloadValueSerializerInterface $payloadValueSerializer;

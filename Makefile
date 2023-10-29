@@ -1,9 +1,5 @@
 ## Executables
 DOCKER_COMPOSE=docker compose -f docker/docker-compose.yml
-DOCKER_COMPOSE_GENERATE_COVERAGE=$(DOCKER_COMPOSE) run --rm --no-deps php bin/phpcov merge build/coverage --html build/coverage/merged/html
-
-## Docker containers
-PHP_CONTAINER_ID=$$($(DOCKER_COMPOSE) ps -q php)
 
 ## Arguments
 ARGUMENTS=$(filter-out $@,$(MAKECMDGOALS))
@@ -37,8 +33,8 @@ test:
 	@$(DOCKER_COMPOSE) run --rm --no-deps php-cli bin/phpunit --no-coverage
 
 test.coverage:
-	@$(DOCKER_COMPOSE) run --no-deps --build --rm php-cli-pcov bin/phpunit
-	@$(DOCKER_COMPOSE_GENERATE_COVERAGE)
+	@$(DOCKER_COMPOSE) run --rm --no-deps --build php-cli-pcov bin/phpunit
+	@$(DOCKER_COMPOSE) run --rm --no-deps php-cli-pcov bin/phpcov merge build/coverage --html build/coverage/merged/html
 
 ###
 ### Code Quality

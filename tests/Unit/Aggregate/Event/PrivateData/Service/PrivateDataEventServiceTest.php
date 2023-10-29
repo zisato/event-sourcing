@@ -14,13 +14,14 @@ use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\PayloadKeyColle
 use Zisato\EventSourcing\Aggregate\Identity\UUID;
 use Zisato\EventSourcing\Tests\Stub\Aggregate\Event\EventStub;
 
+/**
+ * @covers \Zisato\EventSourcing\Aggregate\Event\PrivateData\Service\PrivateDataEventService
+ */
 class PrivateDataEventServiceTest extends TestCase
 {
     private PrivateDataEventServiceInterface $privateDataEventService;
-    /** @var PayloadKeyCollectionStrategyInterface|MockObject $payloadKeyCollectionStrategy */
-    private $payloadKeyCollectionStrategy;
-    /** @var PayloadEncoderAdapterInterface|MockObject $payloadEncoderAdapter */
-    private $payloadEncoderAdapter;
+    private PayloadKeyCollectionStrategyInterface|MockObject $payloadKeyCollectionStrategy;
+    private PayloadEncoderAdapterInterface|MockObject $payloadEncoderAdapter;
 
     protected function setUp(): void
     {

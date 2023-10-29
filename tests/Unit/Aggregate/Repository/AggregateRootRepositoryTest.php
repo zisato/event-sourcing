@@ -26,8 +26,7 @@ use Zisato\EventSourcing\Tests\Stub\Aggregate\Event\EventStub;
 class AggregateRootRepositoryTest extends TestCase
 {
     private AggregateRootRepositoryInterface $repository;
-    /** @var EventStoreInterface|MockObject $eventStore */
-    private $eventStore;
+    private EventStoreInterface|MockObject $eventStore;
 
     protected function setUp(): void
     {

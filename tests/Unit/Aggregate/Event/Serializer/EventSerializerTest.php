@@ -19,8 +19,7 @@ use Zisato\EventSourcing\Tests\Stub\Aggregate\Event\EventStub;
  */
 class EventSerializerTest extends TestCase
 {
-    /** @var VersionResolverInterface|MockObject $versionResolver */
-    private $versionResolver;
+    private VersionResolverInterface|MockObject $versionResolver;
     private EventSerializer $eventSerializer;
 
     protected function setUp(): void

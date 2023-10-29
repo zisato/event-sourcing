@@ -2,6 +2,7 @@
 
 namespace Zisato\EventSourcing\Tests\Unit\Aggregate\Event\PrivateData\ValueObject;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\Adapter\PayloadEncoderAdapterInterface;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\Payload;
@@ -9,10 +10,12 @@ use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\PayloadKey;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\PayloadKeyCollection;
 use Zisato\EventSourcing\Aggregate\Identity\UUID;
 
+/**
+ * @covers \Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\Payload
+ */
 class PayloadTest extends TestCase
 {
-    /** @var PayloadEncoderAdapterInterface|MockObject $payloadEncoderAdapter */
-    private $payloadEncoderAdapter;
+    private PayloadEncoderAdapterInterface|MockObject $payloadEncoderAdapter;
 
     protected function setUp(): void
     {

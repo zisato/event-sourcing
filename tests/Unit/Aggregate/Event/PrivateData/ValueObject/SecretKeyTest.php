@@ -2,9 +2,12 @@
 
 namespace Zisato\EventSourcing\Tests\Unit\Aggregate\Event\PrivateData\ValueObject;
 
-use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\SecretKey;
 use PHPUnit\Framework\TestCase;
+use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\SecretKey;
 
+/**
+ * @covers \Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\SecretKey
+ */
 class SecretKeyTest extends TestCase
 {
     public function testItShouldCreateSuccessfully(): void

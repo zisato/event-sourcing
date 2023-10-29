@@ -2,15 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Zisato\EventSourcing\Aggregate\Event\PrivateData\Adapter;
+namespace Zisato\EventSourcing\Tests\Unit\Aggregate\Event\PrivateData\Adapter;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Zisato\EventSourcing\Aggregate\Event\PrivateData\Adapter\ExternalPayloadEncoderAdapter;
+use Zisato\EventSourcing\Aggregate\Event\PrivateData\Adapter\PayloadEncoderAdapterInterface;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\Repository\PrivateDataRepositoryInterface;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\PayloadKey;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\PayloadKeyCollection;
 use Zisato\EventSourcing\Aggregate\Identity\UUID;
 
+/**
+ * @covers \Zisato\EventSourcing\Aggregate\Event\PrivateData\Adapter\ExternalPayloadEncoderAdapter
+ */
 class ExternalPayloadEncoderAdapterTest extends TestCase
 {
     private const PAYLOAD_DATA = [
@@ -22,8 +27,7 @@ class ExternalPayloadEncoderAdapterTest extends TestCase
     ];
 
     private PayloadEncoderAdapterInterface $payloadEncoderAdapter;
-    /** @var PrivateDataRepositoryInterface|MockObject $privateDataRepository */
-    private $privateDataRepository;
+    private PrivateDataRepositoryInterface|MockObject $privateDataRepository;
 
     protected function setUp(): void
     {

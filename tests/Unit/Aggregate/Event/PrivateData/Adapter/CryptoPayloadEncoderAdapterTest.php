@@ -19,6 +19,9 @@ use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\PayloadKeyColle
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\SecretKey;
 use Zisato\EventSourcing\Aggregate\Identity\UUID;
 
+/**
+ * @covers \Zisato\EventSourcing\Aggregate\Event\PrivateData\Adapter\CryptoPayloadEncoderAdapter
+ */
 class CryptoPayloadEncoderAdapterTest extends TestCase
 {
     private const PAYLOAD_DATA = [
@@ -37,12 +40,9 @@ class CryptoPayloadEncoderAdapterTest extends TestCase
     ];
 
     private PayloadEncoderAdapterInterface $payloadEncoderAdapter;
-    /** @var PayloadValueSerializerInterface|MockObject $payloadValueSerializer */
-    private $payloadValueSerializer;
-    /** @var SecretKeyStoreInterface|MockObject $secretKeyStore */
-    private $secretKeyStore;
-    /** @var CryptoInterface|MockObject $crypto */
-    private $crypto;
+    private PayloadValueSerializerInterface|MockObject $payloadValueSerializer;
+    private SecretKeyStoreInterface|MockObject $secretKeyStore;
+    private CryptoInterface|MockObject $crypto;
 
     protected function setUp(): void
     {

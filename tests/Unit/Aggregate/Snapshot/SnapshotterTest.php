@@ -23,12 +23,9 @@ use Zisato\EventSourcing\Tests\Stub\Aggregate\Event\EventStub;
  */
 class SnapshotterTest extends TestCase
 {
-    /** @var SnapshotStoreInterface|MockObject $snapshotStore */
-    private $snapshotStore;
-    /** @var SnapshotStrategyInterface|MockObject $snapshotStrategy */
-    private $snapshotStrategy;
-    /** @var SnapshotServiceInterface|MockObject $snapshotService */
-    private $snapshotService;
+    private SnapshotStoreInterface|MockObject $snapshotStore;
+    private SnapshotStrategyInterface|MockObject $snapshotStrategy;
+    private SnapshotServiceInterface|MockObject $snapshotService;
     private SnapshotterInterface $snapshotter;
 
     protected function setUp(): void

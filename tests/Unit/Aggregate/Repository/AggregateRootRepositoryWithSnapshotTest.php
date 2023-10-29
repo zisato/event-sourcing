@@ -20,12 +20,9 @@ use Zisato\EventSourcing\Tests\Stub\Aggregate\Event\EventStub;
  */
 class AggregateRootRepositoryWithSnapshotTest extends TestCase
 {
-    /** @var AggregateRootRepositoryInterface|MockObject $aggregateRootRepository */
-    private $aggregateRootRepository;
-    /** @var EventStoreInterface|MockObject $eventStore */
-    private $eventStore;
-    /** @var SnapshotterInterface|MockObject $snapshotter */
-    private $snapshotter;
+    private AggregateRootRepositoryInterface|MockObject $aggregateRootRepository;
+    private EventStoreInterface|MockObject $eventStore;
+    private SnapshotterInterface|MockObject $snapshotter;
     private AggregateRootRepositoryInterface $repository;
 
     protected function setUp(): void

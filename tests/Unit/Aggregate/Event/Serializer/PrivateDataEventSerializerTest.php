@@ -5,17 +5,18 @@ namespace Zisato\EventSourcing\Tests\Unit\Aggregate\Event\Serializer;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Zisato\EventSourcing\Aggregate\Event\EventInterface;
+use Zisato\EventSourcing\Aggregate\Event\PrivateData\Service\PrivateDataEventServiceInterface;
 use Zisato\EventSourcing\Aggregate\Event\Serializer\EventSerializerInterface;
 use Zisato\EventSourcing\Aggregate\Event\Serializer\PrivateDataEventSerializer;
-use Zisato\EventSourcing\Aggregate\Event\PrivateData\Service\PrivateDataEventServiceInterface;
 
+/**
+ * @covers \Zisato\EventSourcing\Aggregate\Event\Serializer\PrivateDataEventSerializer
+ */
 class PrivateDataEventSerializerTest extends TestCase
 {
     private EventSerializerInterface $privateDataEventSerializer;
-    /** @var EventSerializerInterface|MockObject $eventSerializer */
-    private $eventSerializer;
-    /** @var PrivateDataEventServiceInterface|MockObject $eventCryptography */
-    private $privateDataEventService;
+    private EventSerializerInterface|MockObject $eventSerializer;
+    private PrivateDataEventServiceInterface|MockObject $privateDataEventService;
 
     protected function setUp(): void
     {

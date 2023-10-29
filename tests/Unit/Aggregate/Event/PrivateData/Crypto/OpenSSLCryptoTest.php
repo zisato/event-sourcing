@@ -2,11 +2,14 @@
 
 namespace Zisato\EventSourcing\Tests\Unit\Aggregate\Event\PrivateData\Crypto;
 
-use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\SecretKey;
-use Zisato\EventSourcing\Aggregate\Event\PrivateData\Crypto\OpenSSLCrypto;
 use PHPUnit\Framework\TestCase;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\Crypto\CryptoInterface;
+use Zisato\EventSourcing\Aggregate\Event\PrivateData\Crypto\OpenSSLCrypto;
+use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\SecretKey;
 
+/**
+ * @covers \Zisato\EventSourcing\Aggregate\Event\PrivateData\Crypto\OpenSSLCrypto
+ */
 class OpenSSLCryptoTest extends TestCase
 {
     private CryptoInterface $crypto;
@@ -22,7 +25,7 @@ class OpenSSLCryptoTest extends TestCase
 
         $this->assertNotEmpty($key->value());
     }
-    
+
     public function testItShouldDecryptSuccessfully(): void
     {
         $encrypted = 'z2l02s/PIYcvqbAQ25HLYWwwQkxRUWNNUEtrOWpwYlpqOWVzT2c9PQ==';

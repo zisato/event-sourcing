@@ -19,10 +19,8 @@ use Zisato\EventSourcing\Tests\Stub\Aggregate\Event\EventStub;
  */
 class UpcasterEventSerializerTest extends TestCase
 {
-    /** @var EventSerializerInterface|MockObject $eventSerializer */
-    private $eventSerializer;
-    /** @var UpcasterInterface|MockObject $upcaster */
-    private $upcaster;
+    private EventSerializerInterface|MockObject $eventSerializer;
+    private UpcasterInterface|MockObject $upcaster;
     private UpcasterEventSerializer $upcasterEventSerializer;
 
     protected function setUp(): void
