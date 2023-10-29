@@ -9,13 +9,10 @@ use Zisato\EventSourcing\Aggregate\Event\PrivateData\Repository\PrivateDataRepos
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\PayloadKeyCollection;
 use Zisato\EventSourcing\Aggregate\Identity\UUID;
 
-class ExternalPayloadEncoderAdapter implements PayloadEncoderAdapterInterface
+final class ExternalPayloadEncoderAdapter implements PayloadEncoderAdapterInterface
 {
-    private PrivateDataRepositoryInterface $privateDataRepository;
-
-    public function __construct(PrivateDataRepositoryInterface $privateDataRepository)
+    public function __construct(private readonly PrivateDataRepositoryInterface $privateDataRepository)
     {
-        $this->privateDataRepository = $privateDataRepository;
     }
 
     /**
@@ -64,6 +61,7 @@ class ExternalPayloadEncoderAdapter implements PayloadEncoderAdapterInterface
             foreach ($payloadKey->values() as $key) {
                 $ref = &$ref[$key];
             }
+
             $valueId = UUID::generate();
 
             $this->privateDataRepository->save($aggregateId, $valueId, $ref);

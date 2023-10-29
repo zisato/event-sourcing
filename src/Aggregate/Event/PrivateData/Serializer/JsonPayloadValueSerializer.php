@@ -6,7 +6,7 @@ namespace Zisato\EventSourcing\Aggregate\Event\PrivateData\Serializer;
 
 use Zisato\EventSourcing\JSON\JSON;
 
-class JsonPayloadValueSerializer implements PayloadValueSerializerInterface
+final class JsonPayloadValueSerializer implements PayloadValueSerializerInterface
 {
     /**
      * @param mixed $value

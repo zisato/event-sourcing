@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Zisato\EventSourcing\Aggregate\Event\PrivateData\Crypto;
 
-use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\SecretKey;
-use Zisato\EventSourcing\Aggregate\Event\PrivateData\Exception\GenerateSecretKeyException;
-use Zisato\EventSourcing\Aggregate\Event\PrivateData\Exception\EncryptException;
+use Exception;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\Exception\DecryptException;
+use Zisato\EventSourcing\Aggregate\Event\PrivateData\Exception\EncryptException;
+use Zisato\EventSourcing\Aggregate\Event\PrivateData\Exception\GenerateSecretKeyException;
+use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\SecretKey;
 
-class OpenSSLCrypto implements CryptoInterface
+final class OpenSSLCrypto implements CryptoInterface
 {
     private const IV_LENGTH = 16;
 
@@ -21,10 +22,10 @@ class OpenSSLCrypto implements CryptoInterface
 
     public function generateSecretKey(): SecretKey
     {
-        $secretKey = \openssl_random_pseudo_bytes(self::KEY_LENGTH);
-
-        if ($secretKey === false) {
-            throw new GenerateSecretKeyException('Could not create secret key.');
+        try {
+            $secretKey = \openssl_random_pseudo_bytes(self::KEY_LENGTH);
+        } catch (Exception $exception) {
+            throw new GenerateSecretKeyException($exception->getMessage());
         }
 
         return SecretKey::create(\base64_encode($secretKey));
@@ -61,10 +62,10 @@ class OpenSSLCrypto implements CryptoInterface
 
     private function generateIV(): string
     {
-        $iv = \openssl_random_pseudo_bytes(self::IV_LENGTH);
-
-        if ($iv === false) {
-            throw new EncryptException('Could not generate IV.');
+        try {
+            $iv = \openssl_random_pseudo_bytes(self::IV_LENGTH);
+        } catch (Exception $exception) {
+            throw new EncryptException($exception->getMessage());
         }
 
         return $iv;

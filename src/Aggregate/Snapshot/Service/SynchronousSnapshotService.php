@@ -7,13 +7,10 @@ namespace Zisato\EventSourcing\Aggregate\Snapshot\Service;
 use Zisato\EventSourcing\Aggregate\Snapshot\SnapshotInterface;
 use Zisato\EventSourcing\Aggregate\Snapshot\Store\SnapshotStoreInterface;
 
-class SynchronousSnapshotService implements SnapshotServiceInterface
+final class SynchronousSnapshotService implements SnapshotServiceInterface
 {
-    private SnapshotStoreInterface $snapshotStore;
-
-    public function __construct(SnapshotStoreInterface $snapshotStore)
+    public function __construct(private readonly SnapshotStoreInterface $snapshotStore)
     {
-        $this->snapshotStore = $snapshotStore;
     }
 
     public function create(SnapshotInterface $snapshot): void

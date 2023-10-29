@@ -22,16 +22,13 @@ final class JSON
     private const JSON_ENCODE_OPTIONS = \JSON_UNESCAPED_UNICODE |
         \JSON_THROW_ON_ERROR;
 
-    /**
-     * @param mixed $data
-     */
-    public static function encode($data): string
+    public static function encode(mixed $data): string
     {
         return \json_encode($data, self::JSON_ENCODE_OPTIONS);
     }
 
     /**
-     * @param mixed $data
+     * @return mixed
      */
     public static function decode(string $data, bool $assoc = true)
     {

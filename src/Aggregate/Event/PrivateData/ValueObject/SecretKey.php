@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject;
 
-class SecretKey
+final class SecretKey
 {
-    private string $value;
+    private readonly string $value;
 
     private function __construct(string $value)
     {
@@ -27,7 +27,7 @@ class SecretKey
 
     private function assertInvalidValue(string $value): void
     {
-        if (empty(trim($value))) {
+        if (trim($value) === '') {
             throw new \InvalidArgumentException();
         }
     }

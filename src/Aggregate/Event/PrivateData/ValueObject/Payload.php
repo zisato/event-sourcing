@@ -6,30 +6,23 @@ namespace Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject;
 
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\Adapter\PayloadEncoderAdapterInterface;
 
-class Payload
+final class Payload
 {
-    private string $aggregateId;
-
     /**
      * @var array<string, mixed>
      */
-    private array $payload;
+    private array $payload = [];
 
-    private PayloadKeyCollection $payloadKeyCollection;
-
-    private PayloadEncoderAdapterInterface $payloadEncoderAdapter;
+    private readonly PayloadKeyCollection $payloadKeyCollection;
 
     /**
      * @param array<string, mixed> $payload
      */
-    private function __construct(string $aggregateId, array $payload, PayloadKeyCollection $payloadKeyCollection, PayloadEncoderAdapterInterface $payloadEncoderAdapter)
+    private function __construct(private readonly string $aggregateId, array $payload, PayloadKeyCollection $payloadKeyCollection, private readonly PayloadEncoderAdapterInterface $payloadEncoderAdapter)
     {
         $this->assertKeyNotExists($payload, $payloadKeyCollection);
-
-        $this->aggregateId = $aggregateId;
         $this->payload = $payload;
         $this->payloadKeyCollection = $payloadKeyCollection;
-        $this->payloadEncoderAdapter = $payloadEncoderAdapter;
     }
 
     /**
@@ -64,17 +57,17 @@ class Payload
 
     public function show(): void
     {
-        $this->payload = $this->payloadEncoderAdapter->show($this->aggregateId(), $this->payloadKeyCollection(), $this->payload());
+        $this->payload = $this->payloadEncoderAdapter->show($this->aggregateId, $this->payloadKeyCollection, $this->payload);
     }
 
     public function hide(): void
     {
-        $this->payload = $this->payloadEncoderAdapter->hide($this->aggregateId(), $this->payloadKeyCollection(), $this->payload());
+        $this->payload = $this->payloadEncoderAdapter->hide($this->aggregateId, $this->payloadKeyCollection, $this->payload);
     }
 
     public function forget(): void
     {
-        $this->payload = $this->payloadEncoderAdapter->forget($this->aggregateId(), $this->payloadKeyCollection(), $this->payload());
+        $this->payload = $this->payloadEncoderAdapter->forget($this->aggregateId, $this->payloadKeyCollection, $this->payload);
     }
 
     /**

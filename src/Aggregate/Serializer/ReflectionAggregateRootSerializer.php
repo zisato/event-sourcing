@@ -7,7 +7,7 @@ namespace Zisato\EventSourcing\Aggregate\Serializer;
 use Zisato\EventSourcing\Aggregate\AggregateRootInterface;
 use Zisato\EventSourcing\Aggregate\Exception\AggregateSerializerException;
 
-class ReflectionAggregateRootSerializer implements AggregateRootSerializerInterface
+final class ReflectionAggregateRootSerializer implements AggregateRootSerializerInterface
 {
     private const KEY_CLASS_NAME = 'class_name';
 
@@ -15,7 +15,7 @@ class ReflectionAggregateRootSerializer implements AggregateRootSerializerInterf
 
     private const REQUIRED_KEYS = [self::KEY_CLASS_NAME, self::KEY_PROPERTIES];
 
-    private ReflectionAggregateRootPropertySerializer $reflectionAggregateRootPropertySerializer;
+    private readonly ReflectionAggregateRootPropertySerializer $reflectionAggregateRootPropertySerializer;
 
     public function __construct()
     {
@@ -27,7 +27,7 @@ class ReflectionAggregateRootSerializer implements AggregateRootSerializerInterf
         $this->assertNotEmptyRecordedEvents($aggregateRoot);
 
         $result = [
-            self::KEY_CLASS_NAME => \get_class($aggregateRoot),
+            self::KEY_CLASS_NAME => $aggregateRoot::class,
             self::KEY_PROPERTIES => $this->getProperties($aggregateRoot),
         ];
 

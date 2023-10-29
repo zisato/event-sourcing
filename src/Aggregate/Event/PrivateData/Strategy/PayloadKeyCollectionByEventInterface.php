@@ -8,7 +8,7 @@ use Zisato\EventSourcing\Aggregate\Event\PrivateData\PrivateDataPayloadInterface
 use Zisato\EventSourcing\Aggregate\Event\EventInterface;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\PayloadKeyCollection;
 
-class PayloadKeyCollectionByEventInterface implements PayloadKeyCollectionStrategyInterface
+final class PayloadKeyCollectionByEventInterface implements PayloadKeyCollectionStrategyInterface
 {
     public function payloadKeys(EventInterface $event): PayloadKeyCollection
     {

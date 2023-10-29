@@ -14,22 +14,10 @@ use Zisato\EventSourcing\Aggregate\Event\PrivateData\Serializer\PayloadValueSeri
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\PayloadKeyCollection;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\SecretKey;
 
-class CryptoPayloadEncoderAdapter implements PayloadEncoderAdapterInterface
+final class CryptoPayloadEncoderAdapter implements PayloadEncoderAdapterInterface
 {
-    private PayloadValueSerializerInterface $payloadValueSerializer;
-
-    private SecretKeyStoreInterface $secretKeyStore;
-
-    private CryptoInterface $crypto;
-
-    public function __construct(
-        PayloadValueSerializerInterface $payloadValueSerializer,
-        SecretKeyStoreInterface $secretKeyStore,
-        CryptoInterface $crypto
-    ) {
-        $this->payloadValueSerializer = $payloadValueSerializer;
-        $this->secretKeyStore = $secretKeyStore;
-        $this->crypto = $crypto;
+    public function __construct(private readonly PayloadValueSerializerInterface $payloadValueSerializer, private readonly SecretKeyStoreInterface $secretKeyStore, private readonly CryptoInterface $crypto)
+    {
     }
 
     /**
@@ -51,7 +39,7 @@ class CryptoPayloadEncoderAdapter implements PayloadEncoderAdapterInterface
             $secretKey = $this->secretKeyStore->get($aggregateId);
         } catch (DeletedKeyException $exception) {
             throw new ForgottedPrivateDataException($exception->getMessage());
-        } catch (KeyNotFoundException $exception) {
+        } catch (KeyNotFoundException) {
             return $payload;
         }
 
@@ -82,7 +70,7 @@ class CryptoPayloadEncoderAdapter implements PayloadEncoderAdapterInterface
     {
         try {
             $secretKey = $this->secretKeyStore->get($aggregateId);
-        } catch (KeyNotFoundException $exception) {
+        } catch (KeyNotFoundException) {
             $secretKey = $this->crypto->generateSecretKey();
 
             $this->secretKeyStore->save($aggregateId, $secretKey);

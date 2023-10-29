@@ -10,18 +10,10 @@ use Zisato\EventSourcing\Aggregate\Event\PrivateData\Exception\ForgottedPrivateD
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\Strategy\PayloadKeyCollectionStrategyInterface;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject\Payload;
 
-class PrivateDataEventService implements PrivateDataEventServiceInterface
+final class PrivateDataEventService implements PrivateDataEventServiceInterface
 {
-    private PayloadKeyCollectionStrategyInterface $payloadKeyCollectionStrategy;
-
-    private PayloadEncoderAdapterInterface $payloadEncoderAdapter;
-
-    public function __construct(
-        PayloadKeyCollectionStrategyInterface $payloadKeyCollectionStrategy,
-        PayloadEncoderAdapterInterface $payloadEncoderAdapter
-    ) {
-        $this->payloadKeyCollectionStrategy = $payloadKeyCollectionStrategy;
-        $this->payloadEncoderAdapter = $payloadEncoderAdapter;
+    public function __construct(private readonly PayloadKeyCollectionStrategyInterface $payloadKeyCollectionStrategy, private readonly PayloadEncoderAdapterInterface $payloadEncoderAdapter)
+    {
     }
 
     public function hidePrivateData(EventInterface $event): EventInterface
@@ -53,7 +45,7 @@ class PrivateDataEventService implements PrivateDataEventServiceInterface
 
         try {
             $payload->show();
-        } catch (ForgottedPrivateDataException $exception) {
+        } catch (ForgottedPrivateDataException) {
             $payload->forget();
 
             $forgottenPrivateData = true;
@@ -62,7 +54,7 @@ class PrivateDataEventService implements PrivateDataEventServiceInterface
         $newEvent = $this->createNewEvent($event, $payload->payload());
 
         if ($forgottenPrivateData) {
-            $newEvent = $newEvent->withMetadata(self::METADATA_KEY_EVENT_FORGOTTEN_VALUES, true);
+            return $newEvent->withMetadata(self::METADATA_KEY_EVENT_FORGOTTEN_VALUES, true);
         }
 
         return $newEvent;
@@ -74,7 +66,7 @@ class PrivateDataEventService implements PrivateDataEventServiceInterface
     private function createNewEvent(EventInterface $event, array $newPayload): EventInterface
     {
         /** @var callable $callable */
-        $callable = [\get_class($event), 'reconstitute'];
+        $callable = [$event::class, 'reconstitute'];
 
         return \call_user_func(
             $callable,

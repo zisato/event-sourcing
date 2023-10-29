@@ -6,7 +6,7 @@ namespace Zisato\EventSourcing\Aggregate\Serializer;
 
 use Zisato\EventSourcing\Aggregate\AggregateRootInterface;
 
-class ReflectionAggregateRootPropertySerializer
+final class ReflectionAggregateRootPropertySerializer
 {
     private const PROPERTIES_VISIBILITY = \ReflectionProperty::IS_PUBLIC |
         \ReflectionProperty::IS_PROTECTED |

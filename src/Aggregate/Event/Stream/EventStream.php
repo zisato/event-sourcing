@@ -9,7 +9,7 @@ use Zisato\EventSourcing\Aggregate\Event\EventInterface;
 final class EventStream implements EventStreamInterface
 {
     /**
-     * @var array<EventInterface>
+     * @var EventInterface[]
      */
     private array $events = [];
 
@@ -33,7 +33,7 @@ final class EventStream implements EventStreamInterface
     }
 
     /**
-     * @return iterable<EventInterface>
+     * @return \Iterator<EventInterface>
      */
     public function events(): \Iterator
     {

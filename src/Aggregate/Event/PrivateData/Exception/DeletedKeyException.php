@@ -4,6 +4,6 @@ declare(strict_types=1);
 
 namespace Zisato\EventSourcing\Aggregate\Event\PrivateData\Exception;
 
-class DeletedKeyException extends \Exception
+final class DeletedKeyException extends \Exception
 {
 }

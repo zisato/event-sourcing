@@ -9,29 +9,17 @@ use Zisato\EventSourcing\Aggregate\Event\Store\EventStoreInterface;
 use Zisato\EventSourcing\Aggregate\Snapshot\SnapshotterInterface;
 use Zisato\EventSourcing\Identity\IdentityInterface;
 
-class AggregateRootRepositoryWithSnapshot implements AggregateRootRepositoryInterface
+final class AggregateRootRepositoryWithSnapshot implements AggregateRootRepositoryInterface
 {
-    private AggregateRootRepositoryInterface $aggregateRootRepository;
-
-    private EventStoreInterface $eventStore;
-
-    private SnapshotterInterface $snapshotter;
-
-    public function __construct(
-        AggregateRootRepositoryInterface $aggregateRootRepository,
-        EventStoreInterface $eventStore,
-        SnapshotterInterface $snapshotter
-    ) {
-        $this->aggregateRootRepository = $aggregateRootRepository;
-        $this->eventStore = $eventStore;
-        $this->snapshotter = $snapshotter;
+    public function __construct(private readonly AggregateRootRepositoryInterface $aggregateRootRepository, private readonly EventStoreInterface $eventStore, private readonly SnapshotterInterface $snapshotter)
+    {
     }
 
     public function get(IdentityInterface $aggregateId): AggregateRootInterface
     {
         $aggregateRoot = $this->snapshotter->get($aggregateId);
 
-        if ($aggregateRoot !== null) {
+        if ($aggregateRoot instanceof \Zisato\EventSourcing\Aggregate\AggregateRootInterface) {
             $eventStream = $this->eventStore->get($aggregateId->value(), $aggregateRoot->version() ->value());
 
             $aggregateRoot->replyEvents($eventStream);

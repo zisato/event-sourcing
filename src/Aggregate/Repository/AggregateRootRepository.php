@@ -18,24 +18,8 @@ use Zisato\EventSourcing\Identity\IdentityInterface;
 
 final class AggregateRootRepository implements AggregateRootRepositoryInterface
 {
-    protected string $aggregateRootName;
-
-    protected EventStoreInterface $eventStore;
-
-    protected EventDecoratorInterface $eventDecorator;
-
-    protected EventBusInterface $eventBus;
-
-    public function __construct(
-        string $aggregateRootName,
-        EventStoreInterface $eventStore,
-        ?EventDecoratorInterface $eventDecorator = null,
-        ?EventBusInterface $eventBus = null
-    ) {
-        $this->aggregateRootName = $aggregateRootName;
-        $this->eventStore = $eventStore;
-        $this->eventDecorator = $eventDecorator ?? new NullEventDecorator();
-        $this->eventBus = $eventBus ?? new NullEventBus();
+    public function __construct(protected string $aggregateRootName, protected EventStoreInterface $eventStore, protected EventDecoratorInterface $eventDecorator = new NullEventDecorator(), protected EventBusInterface $eventBus = new NullEventBus())
+    {
     }
 
     public function get(IdentityInterface $aggregateId): AggregateRootInterface

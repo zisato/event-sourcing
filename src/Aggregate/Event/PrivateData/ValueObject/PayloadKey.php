@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Zisato\EventSourcing\Aggregate\Event\PrivateData\ValueObject;
 
-class PayloadKey
+final class PayloadKey
 {
     /**
-     * @var array<string>
+     * @var string[]
      */
     private array $values;
 

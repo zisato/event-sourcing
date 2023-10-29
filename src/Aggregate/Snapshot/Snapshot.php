@@ -8,23 +8,17 @@ use Zisato\EventSourcing\Aggregate\AggregateRootInterface;
 use Zisato\EventSourcing\Aggregate\ValueObject\Version;
 use Zisato\EventSourcing\Identity\IdentityInterface;
 
-class Snapshot implements SnapshotInterface
+final class Snapshot implements SnapshotInterface
 {
-    private AggregateRootInterface $aggregateRoot;
-
-    private \DateTimeImmutable $createdAt;
-
-    final protected function __construct(AggregateRootInterface $aggregateRoot, \DateTimeImmutable $createdAt)
+    final protected function __construct(private readonly AggregateRootInterface $aggregateRoot, private readonly \DateTimeImmutable $createdAt)
     {
-        $this->aggregateRoot = $aggregateRoot;
-        $this->createdAt = $createdAt;
     }
 
     public static function create(
         AggregateRootInterface $aggregateRoot,
         \DateTimeImmutable $createdAt
     ): SnapshotInterface {
-        return new static($aggregateRoot, $createdAt);
+        return new self($aggregateRoot, $createdAt);
     }
 
     public function aggregateRoot(): AggregateRootInterface
@@ -34,7 +28,7 @@ class Snapshot implements SnapshotInterface
 
     public function aggregateRootClassName(): string
     {
-        return \get_class($this->aggregateRoot);
+        return $this->aggregateRoot::class;
     }
 
     public function aggregateRootId(): IdentityInterface

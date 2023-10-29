@@ -8,18 +8,10 @@ use Zisato\EventSourcing\Aggregate\Event\EventInterface;
 use Zisato\EventSourcing\Aggregate\Event\Serializer\EventSerializerInterface;
 use Zisato\EventSourcing\Aggregate\Event\PrivateData\Service\PrivateDataEventServiceInterface;
 
-class PrivateDataEventSerializer implements EventSerializerInterface
+final class PrivateDataEventSerializer implements EventSerializerInterface
 {
-    private EventSerializerInterface $eventSerializer;
-
-    private PrivateDataEventServiceInterface $privateDataEventService;
-
-    public function __construct(
-        EventSerializerInterface $eventSerializer,
-        PrivateDataEventServiceInterface $privateDataEventService
-    ) {
-        $this->eventSerializer = $eventSerializer;
-        $this->privateDataEventService = $privateDataEventService;
+    public function __construct(private readonly EventSerializerInterface $eventSerializer, private readonly PrivateDataEventServiceInterface $privateDataEventService)
+    {
     }
 
     public function fromArray(array $data): EventInterface

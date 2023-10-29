@@ -13,8 +13,5 @@ interface PrivateDataRepositoryInterface
      */
     public function get(string $aggregateId, IdentityInterface $valueId);
 
-    /**
-     * @param mixed $value
-     */
-    public function save(string $aggregateId, IdentityInterface $valueId, $value): void;
+    public function save(string $aggregateId, IdentityInterface $valueId, mixed $value): void;
 }

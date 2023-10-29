@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Zisato\EventSourcing\Event;
 
-class Event implements EventInterface
+final class Event implements EventInterface
 {
     /**
      * @param array<string, mixed> $payload

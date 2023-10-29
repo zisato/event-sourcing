@@ -10,29 +10,17 @@ use Zisato\EventSourcing\Aggregate\Snapshot\Store\SnapshotStoreInterface;
 use Zisato\EventSourcing\Aggregate\Snapshot\Strategy\SnapshotStrategyInterface;
 use Zisato\EventSourcing\Identity\IdentityInterface;
 
-class Snapshotter implements SnapshotterInterface
+final class Snapshotter implements SnapshotterInterface
 {
-    private SnapshotStoreInterface $snapshotStore;
-
-    private SnapshotStrategyInterface $snapshotStrategy;
-
-    private SnapshotServiceInterface $snapshotService;
-
-    public function __construct(
-        SnapshotStoreInterface $snapshotStore,
-        SnapshotStrategyInterface $snapshotStrategy,
-        SnapshotServiceInterface $snapshotService
-    ) {
-        $this->snapshotStore = $snapshotStore;
-        $this->snapshotStrategy = $snapshotStrategy;
-        $this->snapshotService = $snapshotService;
+    public function __construct(private readonly SnapshotStoreInterface $snapshotStore, private readonly SnapshotStrategyInterface $snapshotStrategy, private readonly SnapshotServiceInterface $snapshotService)
+    {
     }
 
     public function get(IdentityInterface $aggregateId): ?AggregateRootInterface
     {
         $snapshot = $this->snapshotStore->get($aggregateId);
 
-        if ($snapshot === null) {
+        if (!$snapshot instanceof \Zisato\EventSourcing\Aggregate\Snapshot\SnapshotInterface) {
             return null;
         }
 

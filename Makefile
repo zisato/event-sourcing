@@ -1,0 +1,59 @@
+## Executables
+DOCKER_COMPOSE=docker compose -f docker/docker-compose.yml
+DOCKER_COMPOSE_GENERATE_COVERAGE=$(DOCKER_COMPOSE) run --rm --no-deps php bin/phpcov merge build/coverage --html build/coverage/merged/html
+
+## Docker containers
+PHP_CONTAINER_ID=$$($(DOCKER_COMPOSE) ps -q php)
+
+## Arguments
+ARGUMENTS=$(filter-out $@,$(MAKECMDGOALS))
+
+.DEFAULT_GOAL=help
+.PHONY=help build composer test phpstan rector ecs
+
+###
+### Help
+help: ## List targets
+	@printf "\nUsage: make <command>\n"
+	@grep -E '(^[a-zA-Z0-9\._-]+:$$)|(^[a-zA-Z0-9\._-]+:.*?##.*$$)|(^### .*$$)' $(MAKEFILE_LIST) \
+	| sed -e 's/^###/\n\0/' \
+	| sed -e 's/\(^[A-Za-z0-9\._-]\+:\)\( [ A-Za-z0-9\._-]\+ \)\(## .*$$\)/\1 \3/' \
+	| sed -e 's/^[A-Za-z0-9\._-]/\t\0/' \
+	| sed -e 's/://'
+
+###
+### Docker
+build: ## Build container
+	@$(DOCKER_COMPOSE) build --pull
+
+###
+### Composer
+composer:
+	@$(DOCKER_COMPOSE) run --rm --remove-orphans --no-deps --env COMPOSER_MEMORY_LIMIT=-1 php-cli composer $(ARGUMENTS)
+
+###
+### Test
+test:
+	@$(DOCKER_COMPOSE) run --rm --no-deps php-cli bin/phpunit --no-coverage
+
+test.coverage:
+	@$(DOCKER_COMPOSE) run --no-deps --build --rm php-cli-pcov bin/phpunit
+	@$(DOCKER_COMPOSE_GENERATE_COVERAGE)
+
+###
+### Code Quality
+phpstan:
+	@$(DOCKER_COMPOSE) run --rm --no-deps php-cli bin/phpstan
+
+rector:
+	@$(DOCKER_COMPOSE) run --rm --no-deps php-cli bin/rector process src
+
+ecs:
+	@$(DOCKER_COMPOSE) run --rm --no-deps php-cli bin/ecs check src --fix
+
+code.quality: rector ecs phpstan
+
+###
+## ARGUMENT no rule to make target message fix
+%:
+	@:
