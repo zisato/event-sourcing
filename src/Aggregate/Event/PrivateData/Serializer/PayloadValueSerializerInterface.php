@@ -6,13 +6,7 @@ namespace Zisato\EventSourcing\Aggregate\Event\PrivateData\Serializer;
 
 interface PayloadValueSerializerInterface
 {
-    /**
-     * @param mixed $value
-     */
-    public function toString($value): string;
+    public function toString(mixed $value): string;
 
-    /**
-     * @return mixed
-     */
-    public function fromString(string $value);
+    public function fromString(string $value): mixed;
 }

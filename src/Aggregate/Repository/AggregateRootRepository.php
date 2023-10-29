@@ -16,14 +16,15 @@ use Zisato\EventSourcing\Aggregate\Exception\AggregateRootNotFoundException;
 use Zisato\EventSourcing\Aggregate\ValueObject\Version;
 use Zisato\EventSourcing\Identity\IdentityInterface;
 
-final class AggregateRootRepository implements AggregateRootRepositoryInterface
+class AggregateRootRepository implements AggregateRootRepositoryInterface
 {
-    protected EventDecoratorInterface $eventDecorator;
-    protected EventBusInterface $eventBus;
+    protected readonly EventDecoratorInterface $eventDecorator;
+
+    protected readonly EventBusInterface $eventBus;
 
     public function __construct(
-        protected string $aggregateRootName,
-        protected EventStoreInterface $eventStore,
+        protected readonly string $aggregateRootName,
+        protected readonly EventStoreInterface $eventStore,
         EventDecoratorInterface $eventDecorator = null,
         EventBusInterface $eventBus = null
     ) {

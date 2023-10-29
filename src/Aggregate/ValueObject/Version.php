@@ -50,10 +50,7 @@ final class Version
     private function checkValidValue(int $value): void
     {
         if ($value < self::VALUE_MIN) {
-            throw new InvalidArgumentException(\sprintf(
-                'Invalid Version value. Min allowed: %d',
-                self::VALUE_MIN
-            ));
+            throw new InvalidArgumentException(\sprintf('Invalid Version value. Min allowed: %d', self::VALUE_MIN));
         }
     }
 }

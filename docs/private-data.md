@@ -16,10 +16,10 @@ class MyEvent extend Event implements PrivateDataPayloadInterface
 $payloadKeyCollectionStrategy = new PayloadKeyCollectionByEventInterface();
 ```
 
-Select service to show/hide payload private data
+Select adapter to show/hide payload private data
 - crypto key
 ```
-$privateDataPayloadService = new CryptoPrivateDataPayloadService(
+$cryptoPayloadEncoderAdapter = new CryptoPayloadEncoderAdapter(
     $payloadValueSerializer,
     $secretKeyStore,
     $crypto
@@ -27,61 +27,67 @@ $privateDataPayloadService = new CryptoPrivateDataPayloadService(
 ```
 - external repository
 ```
-$privateDataPayloadService = new ExternalPrivateDataPayloadService($privateDataRepository);
+$externalPayloadEncoderAdapter = new ExternalPayloadEncoderAdapter($privateDataRepository);
 ```
 
-Decorate event serializer with PrivateDataPayloadEventSerializer
+Decorate event serializer with PrivateDataEventSerializer
 ```
-$privateDataEventService = PayloadPrivateDataEventService(
+$privateDataEventService = new PrivateDataEventService(
     $payloadKeyCollectionStrategy,
-    $privateDataPayloadService
+    $payloadEncoderAdapter
 );
 
-$newEventSerializer = new PrivateDataPayloadEventSerializer($eventSerializer, $privateDataEventService);
+$newEventSerializer = new PrivateDataEventSerializer($eventSerializer, $privateDataEventService);
 ```
 
 Get crazy
 ```
-class CrazyPrivateDataPayloadService implements PrivateDataPayloadServiceInterface
+class CrazyPayloadEncoderAdapter implements PayloadEncoderAdapterInterface
 {
-    private array $privateDataPayloadServices;
+    private array $payloadEncoderAdapters;
 
-    public function __construct(PrivateDataPayloadServiceInterface ...$privateDataPayloadServices)
+    public function __construct(PayloadEncoderAdapterInterface ...$payloadEncoderAdapters)
     {
-        $this->privateDataPayloadServices = $privateDataPayloadServices;
+        $this->payloadEncoderAdapters = $payloadEncoderAdapters;
     }
 
-    public function hide(Payload $payload): array
+    
+    public function show(string $aggregateId, PayloadKeyCollection $payloadKeyCollection, array $payload): array
     {
-        foreach ($this->privateDataPayloadServices as $privateDataPayloadService) {
-            $hiddenPayload = $privateDataPayloadService->hide($payload);
-
-            $payload = Payload::create($payload->aggregateId(), $hiddenPayload, $payload->payloadKeyCollection());
+        foreach (array_reverse($this->payloadEncoderAdapters) as $payloadEncoderAdapter) {
+            $payload = $payloadEncoderAdapter->show($aggregateId, $payloadKeyCollection, $payload);
         }
 
-        return $payload->payload();
+        return $payload;
     }
 
-    public function show(Payload $payload): array
+    public function hide(string $aggregateId, PayloadKeyCollection $payloadKeyCollection, array $payload): array
     {
-        foreach (array_reverse($this->privateDataPayloadServices) as $privateDataPayloadService) {
-            $shownPayload = $privateDataPayloadService->show($payload);
-
-            $payload = Payload::create($payload->aggregateId(), $shownPayload, $payload->payloadKeyCollection());
+        foreach ($this->payloadEncoderAdapters as $payloadEncoderAdapter) {
+            $payload = $payloadEncoderAdapter->hide($aggregateId, $payloadKeyCollection, $payload);
         }
 
-        return $payload->payload();
+        return $payload;
+    }
+
+    public function forget(string $aggregateId, PayloadKeyCollection $payloadKeyCollection, array $payload): array
+    {
+        foreach (array_reverse($this->payloadEncoderAdapters) as $payloadEncoderAdapter) {
+            $payload = $payloadEncoderAdapter->forget($aggregateId, $payloadKeyCollection, $payload);
+        }
+
+        return $payload;
     }
 }
 
-$cryptoPrivateDataPayloadService = new CryptoPrivateDataPayloadService(
+$cryptoPayloadEncoderAdapter = new CryptoPayloadEncoderAdapter(
     $payloadValueSerializer,
     $secretKeyStore,
     $crypto
 );
-$externalPrivateDataPayloadService = new ExternalPrivateDataPayloadService($privateDataRepository);
+$externalPayloadEncoderAdapter = new ExternalPayloadEncoderAdapter($privateDataRepository);
 
-$privateDataPayloadService = new CrazyPrivateDataPayloadService($cryptoPrivateDataPayloadService, $privateDataPayloadService);
+$crazyPayloadEncoderAdapter = new CrazyPayloadEncoderAdapter($cryptoPayloadEncoderAdapter, $externalPayloadEncoderAdapter);
 ```
 
 On show private data, if ForgottedPrivateDataException is thrown, all the payload private data will be replaced by null and the following metadata key `event_forgotten_values=true` will be added

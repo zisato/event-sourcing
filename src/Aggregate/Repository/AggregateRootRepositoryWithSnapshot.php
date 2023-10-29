@@ -9,7 +9,7 @@ use Zisato\EventSourcing\Aggregate\Event\Store\EventStoreInterface;
 use Zisato\EventSourcing\Aggregate\Snapshot\SnapshotterInterface;
 use Zisato\EventSourcing\Identity\IdentityInterface;
 
-final class AggregateRootRepositoryWithSnapshot implements AggregateRootRepositoryInterface
+class AggregateRootRepositoryWithSnapshot implements AggregateRootRepositoryInterface
 {
     public function __construct(
         private readonly AggregateRootRepositoryInterface $aggregateRootRepository,

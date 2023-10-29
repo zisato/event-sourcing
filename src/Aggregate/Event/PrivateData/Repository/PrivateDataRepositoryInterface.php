@@ -8,10 +8,7 @@ use Zisato\EventSourcing\Identity\IdentityInterface;
 
 interface PrivateDataRepositoryInterface
 {
-    /**
-     * @return mixed
-     */
-    public function get(string $aggregateId, IdentityInterface $valueId);
+    public function get(string $aggregateId, IdentityInterface $valueId): mixed;
 
     public function save(string $aggregateId, IdentityInterface $valueId, mixed $value): void;
 }

@@ -8,18 +8,12 @@ use Zisato\EventSourcing\JSON\JSON;
 
 final class JsonPayloadValueSerializer implements PayloadValueSerializerInterface
 {
-    /**
-     * @param mixed $value
-     */
-    public function toString($value): string
+    public function toString(mixed $value): string
     {
         return JSON::encode($value);
     }
 
-    /**
-     * @return mixed
-     */
-    public function fromString(string $value)
+    public function fromString(string $value): mixed
     {
         return JSON::decode($value);
     }
