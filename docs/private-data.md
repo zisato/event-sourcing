@@ -1,7 +1,7 @@
 ## Private data
 
 Implement PrivateDataPayloadInterface in event and define the payload private keys
-```
+```php
 class MyEvent extend Event implements PrivateDataPayloadInterface
 {
     public function privateDataPayloadKeys(): PayloadKeyCollection
@@ -18,7 +18,7 @@ $payloadKeyCollectionStrategy = new PayloadKeyCollectionByEventInterface();
 
 Select adapter to show/hide payload private data
 - crypto key
-```
+```php
 $cryptoPayloadEncoderAdapter = new CryptoPayloadEncoderAdapter(
     $payloadValueSerializer,
     $secretKeyStore,
@@ -26,12 +26,12 @@ $cryptoPayloadEncoderAdapter = new CryptoPayloadEncoderAdapter(
 );
 ```
 - external repository
-```
+```php
 $externalPayloadEncoderAdapter = new ExternalPayloadEncoderAdapter($privateDataRepository);
 ```
 
 Decorate event serializer with PrivateDataEventSerializer
-```
+```php
 $privateDataEventService = new PrivateDataEventService(
     $payloadKeyCollectionStrategy,
     $payloadEncoderAdapter
@@ -41,7 +41,7 @@ $newEventSerializer = new PrivateDataEventSerializer($eventSerializer, $privateD
 ```
 
 Get crazy
-```
+```php
 class CrazyPayloadEncoderAdapter implements PayloadEncoderAdapterInterface
 {
     private array $payloadEncoderAdapters;
@@ -91,16 +91,3 @@ $crazyPayloadEncoderAdapter = new CrazyPayloadEncoderAdapter($cryptoPayloadEncod
 ```
 
 On show private data, if ForgottedPrivateDataException is thrown, all the payload private data will be replaced by null and the following metadata key `event_forgotten_values=true` will be added
-
-## Execute tests
-```
-bin/test.sh
-bin/test-coverage.sh
-bin/test-xdebug.sh
-```
-
-## Execute code tools
-```
-bin/phpstan.sh
-bin/ecs.sh
-```
