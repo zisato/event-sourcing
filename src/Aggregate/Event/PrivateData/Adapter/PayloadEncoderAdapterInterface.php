@@ -11,6 +11,4 @@ interface PayloadEncoderAdapterInterface
     public function show(string $aggregateId, PayloadKeyCollection $payloadKeyCollection, array $payload): array;
 
     public function hide(string $aggregateId, PayloadKeyCollection $payloadKeyCollection, array $payload): array;
-
-    public function forget(string $aggregateId, PayloadKeyCollection $payloadKeyCollection, array $payload): array;
 }

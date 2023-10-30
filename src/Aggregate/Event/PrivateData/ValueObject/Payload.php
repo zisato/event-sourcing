@@ -80,11 +80,19 @@ final class Payload
 
     public function forget(): void
     {
-        $this->payload = $this->payloadEncoderAdapter->forget(
-            $this->aggregateId,
-            $this->payloadKeyCollection,
-            $this->payload
-        );
+        $newPayload = $this->payload();
+
+        foreach ($this->payloadKeyCollection->values() as $payloadKey) {
+            $ref = &$newPayload;
+
+            foreach ($payloadKey->values() as $key) {
+                $ref = &$ref[$key];
+            }
+
+            $ref = null;
+        }
+
+        $this->payload = $newPayload;
     }
 
     /**

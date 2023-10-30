@@ -48,26 +48,6 @@ final class CryptoPayloadEncoderAdapter implements PayloadEncoderAdapterInterfac
         return $this->decrypt($secretKey, $payloadKeyCollection, $payload);
     }
 
-    /**
-     * @param array<string, mixed> $payload
-     */
-    public function forget(string $aggregateId, PayloadKeyCollection $payloadKeyCollection, array $payload): array
-    {
-        $newPayload = $payload;
-
-        foreach ($payloadKeyCollection->values() as $payloadKey) {
-            $ref = &$newPayload;
-
-            foreach ($payloadKey->values() as $key) {
-                $ref = &$ref[$key];
-            }
-
-            $ref = null;
-        }
-
-        return $newPayload;
-    }
-
     private function getSecretKey(string $aggregateId): SecretKey
     {
         try {

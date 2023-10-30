@@ -185,11 +185,6 @@ class PrivateDataEventServiceTest extends TestCase
             ->with($this->equalTo($aggregateId->value()), $this->equalTo($payloadKeys), $this->equalTo($data))
             ->willThrowException(new ForgottedPrivateDataException());
 
-        $this->payloadEncoderAdapter->expects($this->once())
-            ->method('forget')
-            ->with($this->equalTo($aggregateId->value()), $this->equalTo($payloadKeys), $this->equalTo($data))
-            ->willReturn($decryptedData);
-
         $event = EventStub::occur($aggregateId->value(), $data);
         $expectedMetadata = array_merge(
             $event->metadata(),
