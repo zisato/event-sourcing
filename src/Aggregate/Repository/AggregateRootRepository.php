@@ -10,6 +10,7 @@ use Zisato\EventSourcing\Aggregate\Event\Bus\EventBusInterface;
 use Zisato\EventSourcing\Aggregate\Event\Bus\NullEventBus;
 use Zisato\EventSourcing\Aggregate\Event\Decorator\EventDecoratorInterface;
 use Zisato\EventSourcing\Aggregate\Event\Decorator\NullEventDecorator;
+use Zisato\EventSourcing\Aggregate\Event\EventInterface;
 use Zisato\EventSourcing\Aggregate\Event\Store\EventStoreInterface;
 use Zisato\EventSourcing\Aggregate\Exception\AggregateRootDeletedException;
 use Zisato\EventSourcing\Aggregate\Exception\AggregateRootNotFoundException;
@@ -61,13 +62,34 @@ class AggregateRootRepository implements AggregateRootRepositoryInterface
     public function save(AggregateRootInterface $aggregateRoot): void
     {
         $events = $aggregateRoot->releaseRecordedEvents();
+        $eventStreamIdDecorator = $this->newEventStreamIdDecorator();
 
         foreach ($events->events() as $event) {
+            $event = $eventStreamIdDecorator->decorate($event);
             $event = $this->eventDecorator->decorate($event);
 
             $this->eventStore->append($event);
 
             $this->eventBus->handle($event);
         }
+    }
+
+    private function newEventStreamIdDecorator(): EventDecoratorInterface
+    {
+        return new class implements EventDecoratorInterface {
+            private const METADATA_KEY = 'event_stream_id';
+
+            private readonly string $id;
+
+            public function __construct()
+            {
+                $this->id = uniqid();
+            }
+
+            public function decorate(EventInterface $event): EventInterface
+            {
+                return $event->withMetadata(self::METADATA_KEY, $this->id);
+            }
+        };
     }
 }
