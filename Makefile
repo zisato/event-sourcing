@@ -1,5 +1,7 @@
 ## Executables
 DOCKER_COMPOSE=docker compose -f docker/docker-compose.yml
+DOCKER_COMPOSE_PCOV=docker compose -f docker/docker-compose.yml -f docker/docker-compose-pcov.yml
+DOCKER_COMPOSE_XDEBUG=docker compose -f docker/docker-compose.yml -f docker/docker-compose-xdebug.yml
 
 ## Arguments
 ARGUMENTS=$(filter-out $@,$(MAKECMDGOALS))
@@ -33,8 +35,8 @@ test:
 	@$(DOCKER_COMPOSE) run --rm --no-deps php-cli bin/phpunit --no-coverage
 
 test.coverage:
-	@$(DOCKER_COMPOSE) run --rm --no-deps --build php-cli-pcov bin/phpunit
-	@$(DOCKER_COMPOSE) run --rm --no-deps php-cli-pcov bin/phpcov merge build/coverage --html build/coverage/merged/html
+	@$(DOCKER_COMPOSE_PCOV) run --rm --no-deps --build php-cli bin/phpunit
+	@$(DOCKER_COMPOSE_PCOV) run --rm --no-deps php-cli bin/phpcov merge build/coverage --html build/coverage/merged/html
 
 ###
 ### Code Quality
